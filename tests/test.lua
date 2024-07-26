@@ -32,7 +32,7 @@ local newLib, newOldMinor = LibStub:NewLibrary("Pants", "Blah 3 Blah") -- regist
 assert(newLib) -- library table
 assert(newOldMinor == 2) -- previous version was 2
 
-local newLib, newOldMinor = LibStub:NewLibrary("Pants", "Blah 4 Blah") -- register a new version with a string minor version (instead of a number)
+local newLib, newOldMinor = LibStub:NewLibrary("Pants", "Blah 4 and please ignore 15 Blah") -- register a new version with a string minor version (instead of a number)
 assert(newLib)
 assert(newOldMinor == 3) -- previous version was 3 (even though it gave a string)
 

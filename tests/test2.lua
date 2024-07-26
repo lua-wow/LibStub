@@ -14,13 +14,14 @@ local lib = LibStub:NewLibrary("MyLib", 1) -- create the lib
 assert(lib) -- check it exists
 assert(rawequal(LibStub:GetLibrary("MyLib"), lib)) -- verify that :GetLibrary("MyLib") properly equals the lib reference
 
-local good = false
+assert(LibStub:NewLibrary("MyLib", 2))	-- create a new version
+
+local count=0
 for major, library in LibStub:IterateLibraries() do
 	-- check that MyLib exists somewhere in the libraries, by iterating through all the libraries
 	if major == "MyLib" then -- we found it!
-		good = true -- so that we know it exists
+		count = count +1
 		assert(rawequal(library, lib)) -- verify that the references are equal
-		break -- no point in continuing
 	end
 end
-assert(good) -- verify that we actually found it
+assert(count == 1) -- verify that we actually found it, and only once
