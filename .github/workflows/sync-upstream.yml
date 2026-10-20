@@ -1,0 +1,40 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # weekly, Monday 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
+      - name: Sync from SVN
+        id: sync
+        run: .github/scripts/sync-upstream.sh
+
+      - name: Commit and push
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          REVISION: ${{ steps.sync.outputs.revision }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m "sync: upstream libstub r$REVISION" -m "Source: https://repos.curseforge.com/wow/libstub/trunk"
+          git push origin "HEAD:$GITHUB_REF_NAME"
